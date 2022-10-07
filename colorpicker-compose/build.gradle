@@ -15,7 +15,7 @@ ext {
     PUBLISH_VERSION = rootVersionName
 }
 
-//apply from: "${rootDir}/scripts/publish-module.gradle"
+apply from: "${rootDir}/scripts/publish-module.gradle"
 
 android {
     compileSdkVersion Configuration.compileSdk
