@@ -17,6 +17,7 @@
 package com.github.skydoves.colorpicker.compose
 
 import android.graphics.Bitmap
+import android.graphics.Color.RGBToHSV
 import android.graphics.Matrix
 import android.graphics.PointF
 import android.os.Handler
@@ -37,6 +38,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.math.atan2
+import kotlin.math.sin
 import kotlin.math.sqrt
 
 /** Creates and remembers a [ColorPickerController] on the current composer. */
@@ -202,6 +204,36 @@ public class ColorPickerController {
                 notifyColorChanged(fromUser)
             }
         }
+    }
+
+    /**
+     * Select a specific color to be updated
+     *
+     * @param color The color that needs to be applied.
+     * @param fromUser Represents this event is triggered by user or not.
+     *
+     * Credits : https://github.com/joe1327
+     */
+    public fun selectByColor(color: Color, fromUser: Boolean = true) {
+        val hsv = FloatArray(3)
+        RGBToHSV(
+            (color.red * 255).toInt(),
+            (color.green * 255).toInt(),
+            (color.blue * 255).toInt(),
+            hsv
+        )
+        val pickerWidth = canvasSize.value.width
+        val radius = pickerWidth / 2f
+        val colorRadius: Float = hsv[1] * radius
+        val angle: Double = ((1 - (hsv[0] / 360f)) * (2 * Math.PI))
+        val midX: Float = pickerWidth / 2f //midpoint of the circle
+        val midY: Float = pickerWidth / 2f
+        val xOffset: Float =
+            (kotlin.math.cos(angle) * colorRadius).toFloat() //offset from the midpoint of the circle
+        val yOffset: Double = sin(angle) * colorRadius
+        val x = midX + xOffset
+        val y = midY + yOffset
+        selectByCoordinate(x, y.toFloat(), fromUser)
     }
 
     /**
