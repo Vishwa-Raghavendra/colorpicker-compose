@@ -214,7 +214,11 @@ public class ColorPickerController {
      *
      * Credits : https://github.com/joe1327
      */
-    public fun selectByColor(color: Color, fromUser: Boolean = true) {
+    public fun selectByColor(
+        color: Color,
+        fromUser: Boolean = true,
+        includeBrightness: Boolean = true
+    ) {
         val hsv = FloatArray(3)
         RGBToHSV(
             (color.red * 255).toInt(),
@@ -234,6 +238,8 @@ public class ColorPickerController {
         val x = midX + xOffset
         val y = midY + yOffset
         selectByCoordinate(x, y.toFloat(), fromUser)
+        if(includeBrightness)
+            setBrightness(hsv[2]/100,fromUser)
     }
 
     /**
