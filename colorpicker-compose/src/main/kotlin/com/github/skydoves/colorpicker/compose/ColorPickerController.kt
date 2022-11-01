@@ -22,6 +22,7 @@ import android.graphics.Matrix
 import android.graphics.PointF
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
@@ -212,20 +213,15 @@ public class ColorPickerController {
      * @param color The color that needs to be applied.
      * @param fromUser Represents this event is triggered by user or not.
      *
-     * Credits : https://github.com/joe1327
+     * Uses https://github.com/joe1327 code for conversion from Color to x,y Coordinates
      */
     public fun selectByColor(
         color: Color,
         fromUser: Boolean = true,
-        includeBrightness: Boolean = true
+        includeBrightness: Boolean = false
     ) {
         val hsv = FloatArray(3)
-        RGBToHSV(
-            (color.red * 255).toInt(),
-            (color.green * 255).toInt(),
-            (color.blue * 255).toInt(),
-            hsv
-        )
+        android.graphics.Color.colorToHSV(color.toArgb(),hsv)
         val pickerWidth = canvasSize.value.width
         val radius = pickerWidth / 2f
         val colorRadius: Float = hsv[1] * radius
@@ -239,7 +235,7 @@ public class ColorPickerController {
         val y = midY + yOffset
         selectByCoordinate(x, y.toFloat(), fromUser)
         if(includeBrightness)
-            setBrightness(hsv[2]/100,fromUser)
+            setBrightness(hsv[2], fromUser)
     }
 
     /**
